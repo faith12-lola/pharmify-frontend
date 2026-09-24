@@ -1,69 +1,146 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+
+// Hardcoded sample data directly in the file to eliminate import errors
+const mockData = [
+  {
+    "dataType": "REGISTERED_DRUG",
+    "productName": "Emzor Paracetamol 500mg",
+    "nafdacRegNo": "04-1234",
+    "activeIngredient": "Paracetamol",
+    "manufacturer": "Emzor Pharmaceutical Ind. Ltd.",
+    "status": "APPROVED",
+    "genericAlternative": "Paracetamol BP 500mg (Generic)"
+  },
+  {
+    "dataType": "REGISTERED_DRUG",
+    "productName": "Augmentin 625mg",
+    "nafdacRegNo": "04-5678",
+    "activeIngredient": "Amoxicillin / Clavulanic Acid",
+    "manufacturer": "GlaxoSmithKline",
+    "status": "APPROVED",
+    "genericAlternative": "Amoxiclav 625mg (Generic)"
+  },
+  {
+    "dataType": "RECALL_ALERT",
+    "productName": "Unverified Cough Syrup Batch #881",
+    "nafdacRegNo": "04-9999",
+    "activeIngredient": "Promethazine",
+    "manufacturer": "Unknown Laboratory",
+    "status": "RECALLED",
+    "reason": "Flagged by NAFDAC for harmful contaminants"
+  }
+];
 
 export default function Home() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState(mockData);
+
+  const handleSearch = (term) => {
+    setQuery(term);
+    if (!term.trim()) {
+      setResults(mockData);
+    } else {
+      const filtered = mockData.filter(item =>
+        item.productName.toLowerCase().includes(term.toLowerCase()) ||
+        item.nafdacRegNo.toLowerCase().includes(term.toLowerCase())
+      );
+      setResults(filtered);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-2xl mx-auto">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-extrabold text-gray-900">Pharmify</h1>
+            <p className="text-sm text-gray-500">NAFDAC Drug Verification Engine</p>
+          </div>
+          <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
+            🟢 Powered by Apify
+          </span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Search Box */}
+        <div className="bg-white p-4 rounded-xl shadow-sm border mb-6">
+          <input
+            type="text"
+            placeholder="Search drug name (e.g. Paracetamol) or Reg No..."
+            value={query}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-full border p-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          {/* Quick Demo Presets */}
+          <div className="flex gap-2 mt-3 text-xs">
+            <span className="text-gray-400">Click to test:</span>
+            <button 
+              onClick={() => handleSearch('Emzor')} 
+              className="text-blue-600 underline font-semibold"
+            >
+              Verified Drug
+            </button>
+            <button 
+              onClick={() => handleSearch('Cough')} 
+              className="text-red-600 underline font-semibold"
+            >
+              Recalled Drug
+            </button>
+            <button 
+              onClick={() => handleSearch('')} 
+              className="text-gray-500 underline ml-auto"
+            >
+              Show All
+            </button>
+          </div>
         </div>
-      </main>
-    </div>
+
+        {/* Results List */}
+        <div className="space-y-4">
+          {results.map((drug, index) => (
+            <div key={index} className="bg-white p-5 rounded-xl border shadow-sm">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="font-bold text-lg text-gray-900">{drug.productName}</h2>
+                  <p className="text-xs text-gray-500">Active Ingredient: {drug.activeIngredient}</p>
+                </div>
+                
+                {drug.status === 'APPROVED' ? (
+                  <span className="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full">
+                    🟢 Approved
+                  </span>
+                ) : (
+                  <span className="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full">
+                    🔴 Recalled
+                  </span>
+                )}
+              </div>
+
+              <div className="text-xs text-gray-600 mt-3 pt-2 border-t flex justify-between">
+                <span>NAFDAC Reg No: <strong>{drug.nafdacRegNo}</strong></span>
+                <span>Manufacturer: {drug.manufacturer}</span>
+              </div>
+
+              {drug.reason && (
+                <div className="mt-2 bg-red-50 text-red-700 text-xs p-2 rounded border border-red-200">
+                  ⚠️ {drug.reason}
+                </div>
+              )}
+
+              {drug.genericAlternative && (
+                <div className="mt-2 bg-blue-50 text-blue-800 text-xs p-2 rounded border border-blue-200 font-medium">
+                  💡 Generic Alternative: {drug.genericAlternative}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </main>
   );
 }

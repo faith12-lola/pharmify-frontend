@@ -1,0 +1,29 @@
+[
+  {
+    "dataType": "REGISTERED_DRUG",
+    "productName": "Emzor Paracetamol 500mg",
+    "nafdacRegNo": "04-1234",
+    "activeIngredient": "Paracetamol",
+    "manufacturer": "Emzor Pharmaceutical Ind. Ltd.",
+    "status": "APPROVED",
+    "genericAlternative": "Paracetamol BP 500mg (Generic)"
+  },
+  {
+    "dataType": "REGISTERED_DRUG",
+    "productName": "Augmentin 625mg",
+    "nafdacRegNo": "04-5678",
+    "activeIngredient": "Amoxicillin / Clavulanic Acid",
+    "manufacturer": "GlaxoSmithKline",
+    "status": "APPROVED",
+    "genericAlternative": "Amoxiclav 625mg (Generic)"
+  },
+  {
+    "dataType": "RECALL_ALERT",
+    "productName": "Unverified Cough Syrup Batch #881",
+    "nafdacRegNo": "04-9999",
+    "activeIngredient": "Promethazine",
+    "manufacturer": "Unknown Laboratory",
+    "status": "RECALLED",
+    "reason": "Flagged by NAFDAC for harmful contaminants"
+  }
+]
