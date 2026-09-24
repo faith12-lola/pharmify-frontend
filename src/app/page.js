@@ -1,146 +1,156 @@
-'use client';
+"use client";
+import { useState } from "react";
 
-import { useState } from 'react';
-
-// Hardcoded sample data directly in the file to eliminate import errors
 const mockData = [
   {
-    "dataType": "REGISTERED_DRUG",
-    "productName": "Emzor Paracetamol 500mg",
-    "nafdacRegNo": "04-1234",
-    "activeIngredient": "Paracetamol",
-    "manufacturer": "Emzor Pharmaceutical Ind. Ltd.",
-    "status": "APPROVED",
-    "genericAlternative": "Paracetamol BP 500mg (Generic)"
+    id: 1,
+    productName: "Emzor Paracetamol 500mg",
+    nafdacRegNo: "04-1234",
+    status: "APPROVED",
+    activeIngredient: "Paracetamol",
+    riskReason: "Passed full chemical purity and potency checks.",
+    genericAlternative: "GeneRx Paracetamol 500mg (Save ~30%)",
   },
   {
-    "dataType": "REGISTERED_DRUG",
-    "productName": "Augmentin 625mg",
-    "nafdacRegNo": "04-5678",
-    "activeIngredient": "Amoxicillin / Clavulanic Acid",
-    "manufacturer": "GlaxoSmithKline",
-    "status": "APPROVED",
-    "genericAlternative": "Amoxiclav 625mg (Generic)"
+    id: 2,
+    productName: "FakeCure Cough Syrup",
+    nafdacRegNo: "A6-9999",
+    status: "RECALLED",
+    activeIngredient: "Diethylene Glycol",
+    riskReason: "Contaminated batch flagged in recent NAFDAC regulatory alert.",
+    genericAlternative: "N/A - Avoid Usage",
   },
-  {
-    "dataType": "RECALL_ALERT",
-    "productName": "Unverified Cough Syrup Batch #881",
-    "nafdacRegNo": "04-9999",
-    "activeIngredient": "Promethazine",
-    "manufacturer": "Unknown Laboratory",
-    "status": "RECALLED",
-    "reason": "Flagged by NAFDAC for harmful contaminants"
-  }
 ];
 
 export default function Home() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState(mockData);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = (term) => {
     setQuery(term);
-    if (!term.trim()) {
-      setResults(mockData);
-    } else {
-      const filtered = mockData.filter(item =>
-        item.productName.toLowerCase().includes(term.toLowerCase()) ||
-        item.nafdacRegNo.toLowerCase().includes(term.toLowerCase())
-      );
-      setResults(filtered);
-    }
+    setLoading(true);
+
+    setTimeout(() => {
+      if (!term.trim()) {
+        setResults(mockData);
+      } else {
+        const filtered = mockData.filter(
+          (item) =>
+            item.productName.toLowerCase().includes(term.toLowerCase()) ||
+            item.nafdacRegNo.toLowerCase().includes(term.toLowerCase())
+        );
+        setResults(filtered);
+      }
+      setLoading(false);
+    }, 300);
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-2xl mx-auto">
-        
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Pharmify</h1>
-            <p className="text-sm text-gray-500">NAFDAC Drug Verification Engine</p>
-          </div>
-          <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
-            🟢 Powered by Apify
-          </span>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-teal-100 text-slate-800 font-sans pb-16">
+      {/* She Code Africa & Apify Vibrant Header */}
+      <header className="bg-gradient-to-r from-purple-900 via-indigo-800 to-teal-700 text-white py-14 px-6 shadow-xl border-b-4 border-orange-500">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Brand Badges */}
+          {/* <div className="flex justify-center items-center gap-3 mb-4 flex-wrap">
+            <span className="bg-orange-500 text-white text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
+              Orange & Green: Apify
+            </span>
+            <span className="bg-purple-600 text-white text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md border border-purple-400">
+              Purple & Teal: She Code Africa
+            </span>
+          </div> */}
+
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tight mb-3 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-white to-cyan-200">
+            Pharmify
+          </h1>
+          <p className="text-teal-100 text-lg font-medium max-w-xl mx-auto">
+            Instant NAFDAC drug verification, safety alerts & generic alternatives.
+          </p>
         </div>
+      </header>
 
-        {/* Search Box */}
-        <div className="bg-white p-4 rounded-xl shadow-sm border mb-6">
-          <input
-            type="text"
-            placeholder="Search drug name (e.g. Paracetamol) or Reg No..."
-            value={query}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="w-full border p-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          {/* Quick Demo Presets */}
-          <div className="flex gap-2 mt-3 text-xs">
-            <span className="text-gray-400">Click to test:</span>
-            <button 
-              onClick={() => handleSearch('Emzor')} 
-              className="text-blue-600 underline font-semibold"
-            >
-              Verified Drug
-            </button>
-            <button 
-              onClick={() => handleSearch('Cough')} 
-              className="text-red-600 underline font-semibold"
-            >
-              Recalled Drug
-            </button>
-            <button 
-              onClick={() => handleSearch('')} 
-              className="text-gray-500 underline ml-auto"
-            >
-              Show All
+      {/* Main Container */}
+      <main className="max-w-3xl mx-auto px-6 -mt-8">
+        {/* Glowing Search Bar Card */}
+        <div className="bg-white rounded-2xl shadow-2xl p-4 border-2 border-purple-200 mb-8 transform transition hover:scale-[1.01]">
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search drug name or NAFDAC No (e.g. Paracetamol)..."
+              className="w-full pl-5 pr-14 py-4 text-lg rounded-xl border-2 border-teal-300 focus:outline-none focus:ring-4 focus:ring-purple-400 focus:border-purple-600 text-slate-900 placeholder-slate-400 font-medium bg-slate-50"
+            />
+            <button className="absolute right-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold px-4 py-2.5 rounded-lg shadow-md transition-all">
+              Search
             </button>
           </div>
         </div>
 
-        {/* Results List */}
-        <div className="space-y-4">
-          {results.map((drug, index) => (
-            <div key={index} className="bg-white p-5 rounded-xl border shadow-sm">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="font-bold text-lg text-gray-900">{drug.productName}</h2>
-                  <p className="text-xs text-gray-500">Active Ingredient: {drug.activeIngredient}</p>
+        {/* Results Section */}
+        {loading ? (
+          <div className="text-center py-12 text-purple-800 font-bold text-lg animate-pulse bg-white/80 rounded-2xl border border-purple-200 shadow-md">
+            ⚡ Processing via Apify AI backend...
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {results.length > 0 ? (
+              results.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl p-6 shadow-xl border-2 border-indigo-100 hover:border-purple-300 transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h2 className="text-2xl font-black text-purple-950">
+                        {item.productName}
+                      </h2>
+                      <p className="text-sm font-bold text-teal-700 font-mono mt-1 bg-teal-50 inline-block px-2.5 py-1 rounded-md border border-teal-200">
+                        NAFDAC REG: {item.nafdacRegNo}
+                      </p>
+                    </div>
+                    <span
+                      className={`px-4 py-1.5 text-xs font-black rounded-full uppercase tracking-wider shadow-sm ${
+                        item.status === "APPROVED"
+                          ? "bg-emerald-500 text-white border-2 border-emerald-600"
+                          : "bg-rose-600 text-white border-2 border-rose-700"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </div>
+
+                  <div className="border-t border-slate-100 pt-4 mt-2 space-y-3">
+                    <p className="text-slate-700 text-base">
+                      <strong className="text-purple-900 font-bold">Active Ingredient:</strong>{" "}
+                      <span className="font-semibold text-slate-800">{item.activeIngredient}</span>
+                    </p>
+                    <p className="text-slate-700 text-base">
+                      <strong className="text-purple-900 font-bold">Safety Summary:</strong>{" "}
+                      <span className="text-slate-700">{item.riskReason}</span>
+                    </p>
+                    
+                    {item.status === "APPROVED" ? (
+                      <div className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-xl p-4 font-bold shadow-md">
+                        💡 <strong>Generic Alternative:</strong> {item.genericAlternative}
+                      </div>
+                    ) : (
+                      <div className="bg-rose-50 border-2 border-rose-200 text-rose-900 rounded-xl p-4 font-bold">
+                        ⚠️ <strong>Warning:</strong> Product flagged. Do not purchase or ingest.
+                      </div>
+                    )}
+                  </div>
                 </div>
-                
-                {drug.status === 'APPROVED' ? (
-                  <span className="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full">
-                    🟢 Approved
-                  </span>
-                ) : (
-                  <span className="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full">
-                    🔴 Recalled
-                  </span>
-                )}
+              ))
+            ) : (
+              <div className="text-center py-12 bg-white rounded-2xl border-2 border-slate-200 text-slate-600 font-bold shadow-md">
+                No matching drug records found.
               </div>
-
-              <div className="text-xs text-gray-600 mt-3 pt-2 border-t flex justify-between">
-                <span>NAFDAC Reg No: <strong>{drug.nafdacRegNo}</strong></span>
-                <span>Manufacturer: {drug.manufacturer}</span>
-              </div>
-
-              {drug.reason && (
-                <div className="mt-2 bg-red-50 text-red-700 text-xs p-2 rounded border border-red-200">
-                  ⚠️ {drug.reason}
-                </div>
-              )}
-
-              {drug.genericAlternative && (
-                <div className="mt-2 bg-blue-50 text-blue-800 text-xs p-2 rounded border border-blue-200 font-medium">
-                  💡 Generic Alternative: {drug.genericAlternative}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-      </div>
-    </main>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
   );
 }
